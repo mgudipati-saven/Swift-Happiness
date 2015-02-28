@@ -31,6 +31,15 @@ class FaceView: UIView
     
     weak var dataSource: FaceViewDataSource?
     
+    func scale(gesture: UIPinchGestureRecognizer) {
+        switch gesture.state {
+        case .Changed:
+            scale *= gesture.scale
+            gesture.scale = 1
+        default: break
+        }
+    }
+    
     private struct Scaling {
         static let FaceWidthToEyeWidthRatio: CGFloat = 6
         static let FaceWidthToEyeOffsetRatio: CGFloat = 3
