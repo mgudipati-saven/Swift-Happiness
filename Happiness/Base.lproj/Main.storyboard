@@ -19,6 +19,17 @@
                             <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="jqA-KY-xL2" customClass="FaceView" customModule="Happiness" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="scale">
+                                        <real key="value" value="0.90000000000000002"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="color" keyPath="color">
+                                        <color key="value" red="1" green="0.49207302401593556" blue="0.10615709395788764" alpha="1" colorSpace="calibratedRGB"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="lineWidth">
+                                        <real key="value" value="2"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -29,10 +40,13 @@
                             <constraint firstItem="jqA-KY-xL2" firstAttribute="top" secondItem="Tl1-zS-6fw" secondAttribute="top" id="rhU-GU-ZNZ"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="faceView" destination="jqA-KY-xL2" id="xrO-qw-H9T"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hde-Ua-rmJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-250" y="440"/>
+            <point key="canvasLocation" x="-1190" y="356"/>
         </scene>
     </scenes>
 </document>

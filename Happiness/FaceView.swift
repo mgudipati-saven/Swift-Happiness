@@ -8,10 +8,18 @@
 
 import UIKit
 
+protocol FaceViewDataSource: class {
+    func smilinessForFaceView(sender: FaceView) -> Double?
+}
+
+@IBDesignable
 class FaceView: UIView
 {
+    @IBInspectable
     var lineWidth: CGFloat = 3 { didSet { setNeedsDisplay() } }
+    @IBInspectable
     var color: UIColor = UIColor.blueColor() { didSet { setNeedsDisplay() } }
+    @IBInspectable
     var scale: CGFloat = 0.90 { didSet { setNeedsDisplay() } }
     
     var faceRect: CGRect {
@@ -21,13 +29,15 @@ class FaceView: UIView
         return CGRectOffset(faceRect, -faceWidth/2, -faceWidth/2)
     }
     
+    weak var dataSource: FaceViewDataSource?
+    
     private struct Scaling {
-        static let FaceWidthToEyeWidthRatio: CGFloat = 5
-        static let FaceWidthToEyeOffsetRatio: CGFloat = 4
-        static let FaceWidthToEyeSeparationRatio: CGFloat = 5
+        static let FaceWidthToEyeWidthRatio: CGFloat = 6
+        static let FaceWidthToEyeOffsetRatio: CGFloat = 3
+        static let FaceWidthToEyeSeparationRatio: CGFloat = 3
         static let FaceWidthToMouthWidthRatio: CGFloat = 2
         static let FaceWidthToMouthHeightRatio: CGFloat = 5
-        static let FaceWidthToMouthOffsetRatio: CGFloat = 5
+        static let FaceWidthToMouthOffsetRatio: CGFloat = 1.5
     }
 
     private enum Eye { case Left, Right }
@@ -37,11 +47,11 @@ class FaceView: UIView
         let eyeVerticalOffset = faceRect.width / Scaling.FaceWidthToEyeOffsetRatio
         let eyeSeparation = faceRect.width / Scaling.FaceWidthToEyeSeparationRatio
         
-        var eyeCenter = convertPoint(center, fromView: superview)
-        eyeCenter.y -= eyeVerticalOffset
+        var eyeCenter = faceRect.origin
+        eyeCenter.y += eyeVerticalOffset
         switch whichEye {
-        case .Left: eyeCenter.x -= eyeSeparation
-        case .Right: eyeCenter.x += eyeSeparation
+        case .Left: eyeCenter.x += (faceRect.width - eyeSeparation) / 2
+        case .Right: eyeCenter.x += (faceRect.width + eyeSeparation) / 2
         }
         
         var eyeRect = CGRectMake(eyeCenter.x, eyeCenter.y, eyeWidth, eyeWidth)
@@ -57,8 +67,9 @@ class FaceView: UIView
         
         let smileHeight = CGFloat(max(min(fractionOfMaxSmile, 1), -1)) * mouthHeight
 
-        var mouthCenter = convertPoint(center, fromView: superview)
-        let start = CGPoint(x: mouthCenter.x - mouthWidth / 2, y: mouthCenter.y + mouthVerticalOffset)
+        var mouthCenter = faceRect.origin
+        let start = CGPoint(x: faceRect.origin.x + (faceRect.width - mouthWidth) / 2,
+            y: faceRect.origin.y + mouthVerticalOffset)
         let end = CGPoint(x: start.x + mouthWidth, y: start.y)
         let cp1 = CGPoint(x: start.x + mouthWidth / 3, y: start.y + smileHeight)
         let cp2 = CGPoint(x: end.x - mouthWidth / 3, y: cp1.y)
@@ -78,6 +89,6 @@ class FaceView: UIView
         
         bezierPathForEye(.Left).stroke()
         bezierPathForEye(.Right).stroke()
-        bezierPathForSmile(-0.5).stroke()
+        bezierPathForSmile(dataSource?.smilinessForFaceView(self) ?? 0.0).stroke()
     }
 }
